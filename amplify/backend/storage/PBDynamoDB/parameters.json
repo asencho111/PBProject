@@ -1,0 +1,5 @@
+{
+    "tableName": "VotingProjects",
+    "partitionKeyName": "name",
+    "partitionKeyType": "S"
+}
