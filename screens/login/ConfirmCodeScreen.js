@@ -10,16 +10,14 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import {Auth} from 'aws-amplify'
-
-
+import CurrentUserContext from '../../navigation/UserContext'
 const { width: WIDTH } = Dimensions.get('window')
 
 export default function ConfirmCodeScreen({navigation, route}) {
 
   const [code, setCode] = useState('')
   const {previousScreen} = route.params
-  const {loggedUser, setLoggedUser} = useContext(LoggedUserContext)
-
+  const {currentUser, setCurrentUser} = useContext(CurrentUserContext)
 
   function confirmPressed() {
     if (previousScreen == 'Log-in Screen') {
@@ -33,8 +31,10 @@ export default function ConfirmCodeScreen({navigation, route}) {
     const {currentUser} = route.params
     try {
       const mfaType = currentUser.challengeName
-      const loggedUser = await Auth.confirmSignIn(currentUser, codeIn, mfaType)
-      setLoggedUser(loggedUser)
+      await Auth.confirmSignIn(currentUser, codeIn, mfaType)
+      const user = await Auth.currentAuthenticatedUser()
+      setCurrentUser(user)
+      console.log(user)
     } catch(err) {
       Alert.alert(err.message)
     }

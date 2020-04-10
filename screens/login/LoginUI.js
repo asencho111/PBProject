@@ -22,7 +22,7 @@ export default function LoginUI({navigation}){
     try {
         const user = await Auth.signIn(username, password);
         if (user.challengeName == 'SMS_MFA') {
-          navigation.navigate('Confirm Sign-in', {currentUser: user, previousScreen : 'Log-in Screen'})
+          navigation.navigate('Confirm Code screen', {currentUser: user, previousScreen : 'Log-in Screen'})
         }
         if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
           const {requiredAttributes} = user.challengeParam; // the array of required attributes, e.g ['email', 'phone_number']
@@ -124,11 +124,6 @@ const styles = StyleSheet.create({
     marginTop: 0,
     opacity: 0.8
   },
-  eyeBtn: {
-    position: 'absolute',
-    top: 8,
-    left: 35
-  },
   loginBtn: {
     width: (0.8 * WIDTH),
     height: 40,
@@ -136,19 +131,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#DEDEDD',
     justifyContent: 'center',
     marginTop: 25
-  },
-  emergencyBtn: {
-    width: WIDTH - 100,
-    height: 40,
-    borderRadius: 25,
-    backgroundColor: '#F47777',
-    justifyContent: 'center',
-    marginTop: 40
-  },
-  text: {
-    color: '#2F9589',
-    fontSize: 16,
-    textAlign: 'center'
   },
   textBtn: {
     color: '#6E6A6A',
