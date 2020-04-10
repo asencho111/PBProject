@@ -1,0 +1,15 @@
+{
+    "yearthree": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-pbweb-yearthree-211523-authRole",
+            "UnauthRoleArn": "arn:aws:iam::555247183382:role/amplify-pbweb-yearthree-211523-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::555247183382:role/amplify-pbweb-yearthree-211523-authRole",
+            "Region": "eu-west-2",
+            "DeploymentBucketName": "amplify-pbweb-yearthree-211523-deployment",
+            "UnauthRoleName": "amplify-pbweb-yearthree-211523-unauthRole",
+            "StackName": "amplify-pbweb-yearthree-211523",
+            "StackId": "arn:aws:cloudformation:eu-west-2:555247183382:stack/amplify-pbweb-yearthree-211523/20a217e0-7a8e-11ea-a46f-029d9e7b7264",
+            "AmplifyAppId": "d39ubewak7p85n"
+        }
+    }
+}
