@@ -1,4 +1,10 @@
 {
 	"function": {},
-	"auth": {}
+	"auth": {},
+	"storage": {
+		"pbwebnosql": {
+			"service": "DynamoDB",
+			"providerPlugin": "awscloudformation"
+		}
+	}
 }

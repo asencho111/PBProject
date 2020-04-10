@@ -1,8 +1,8 @@
 import React, {useState} from "react"
 import {navigate } from "gatsby"
 
-import Layout from "./layout"
-import SEO from "./seo"
+import Layout from "../components/layout"
+import SEO from "../components/seo"
 import {Auth} from 'aws-amplify'
 
 function RegPage(){
@@ -11,6 +11,20 @@ function RegPage(){
   const [password, setPassword] =  useState('')
   const [confirmPassword, setConfirmPassword] =  useState('')
   const [attributes, setAttributes] =  useState({})
+
+  async function resendCode(){
+    try {
+      const username = prompt('enter username to send another code')
+      const resend = await Auth.resendSignUp(username)
+      console.log("resend: "+resend+"\n");
+      const code = prompt('enter new code', '').replace(/\s/g, '')
+      console.log("code: "+code+"\n");
+      const confirm = await Auth.confirmSignUp(username,code)
+      navigate('/app')
+      alert('registration successful')
+    } catch(err) {alert(err.message)}
+  }
+  
 
   async function register(){
     if (password === confirmPassword) {
@@ -21,10 +35,10 @@ function RegPage(){
           attributes: attributes,
         })
         if (signUpResult.userConfirmed == false){
-          const code = prompt('Please enter the code from your e-mail', '1234')
-          const confirm = await Auth.confirmSignUp(username, code)
-          navigate('/app')
-        } else {navigate('/app')}
+          const confirm = await Auth.confirmSignUp(username, prompt('enter code', ' '))
+        } 
+        navigate('/app')
+        alert('registration successful')
       } catch (err){
         alert(err.message)
       }
@@ -159,6 +173,14 @@ function RegPage(){
           }}>
             Submit
         </button>
+        <button 
+          type="button"
+          onClick = {async (e) => {
+            e.preventDefault()
+            await resendCode()
+          }}>
+            Resend Code
+        </button>        
       </form>
     </Layout>
   )

@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from "react"
 import {navigate } from "gatsby"
 
-import Layout from "./layout"
-import SEO from "./seo"
+import Layout from "../components/layout"
+import SEO from "../components/seo"
 import {isUserLogged} from '../services/auth'
 import {Auth} from 'aws-amplify'
 
@@ -10,18 +10,21 @@ function LoginPage(){
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  useEffect(() => {
-    // Auth.currentSession().then(shit => console.log(shit))
-    // Auth.signOut().then(()=>{
-    //   window.localStorage.clear()
-    // }).catch(() => alert('err with effect'))
-  })
+  // useEffect(() => {
+  //   signOut()
+  // })
 
+  // async function signOut(){
+  //   try{
+  //     const promise = await Auth.signOut()
+  //     window.localStorage.clear()
+  //   } catch(err) {alert(err.message)}
+  // }
 
-  function forgotPass(){
+  async function forgotPass(){
     try {
       const username = prompt('Please enter your username to reset your password', ' ')
-      // await Auth.forgotPassword(username)
+      await Auth.forgotPassword(username)
       navigate('app/resetPassword', {state: {username}})
     } catch (err) {alert(err.message)}
     
@@ -33,9 +36,9 @@ function LoginPage(){
       const code = prompt('Enter the validation code','')
       const loggedUser = await Auth.confirmSignIn(user, code)
       isUserLogged(loggedUser)
-      navigate('/app/page-2')
+      navigate('/app/main')
     } catch(err) {
-      console.log('err: ' +err.code + ' ' + err.message)
+      alert('err: ' +err.code + ' ' + err.message)
     }
   }
 

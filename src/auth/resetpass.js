@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from "react"
 import {navigate} from "gatsby"
 
-import Layout from "./layout"
-import SEO from "./seo"
+import Layout from "../components/layout"
+import SEO from "../components/seo"
 import {Auth} from 'aws-amplify'
 
 function ResetPasswordPage({location}){
