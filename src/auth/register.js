@@ -35,7 +35,7 @@ function RegPage(){
           attributes: attributes,
         })
         if (signUpResult.userConfirmed == false){
-          const confirm = await Auth.confirmSignUp(username, prompt('enter code', ' '))
+          await Auth.confirmSignUp(username, prompt('enter code', ''))
         } 
         navigate('/app')
         alert('registration successful')

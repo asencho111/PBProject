@@ -1,10 +1,81 @@
 {
-	"function": {},
-	"auth": {},
-	"storage": {
-		"pbwebnosql": {
-			"service": "DynamoDB",
-			"providerPlugin": "awscloudformation"
+	"function": {
+		"AdminQueries7ae93720": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"dependsOn": [
+				{
+					"category": "auth",
+					"resourceName": "PBAuth",
+					"attributes": [
+						"UserPoolId"
+					]
+				}
+			]
+		}
+	},
+	"auth": {
+		"PBAuth": {
+			"service": "Cognito",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": []
+		},
+		"userPoolGroups": {
+			"service": "Cognito-UserPool-Groups",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [
+				{
+					"category": "auth",
+					"resourceName": "PBAuth",
+					"attributes": [
+						"UserPoolId",
+						"AppClientIDWeb",
+						"AppClientID",
+						"IdentityPoolId"
+					]
+				}
+			]
+		}
+	},
+	"storage": {},
+	"api": {
+		"AdminQueries": {
+			"service": "API Gateway",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [
+				{
+					"category": "auth",
+					"resourceName": "PBAuth",
+					"attributes": [
+						"UserPoolId"
+					]
+				},
+				{
+					"category": "function",
+					"resourceName": "AdminQueries7ae93720",
+					"attributes": [
+						"Arn",
+						"Name"
+					]
+				}
+			]
+		},
+		"PBGQL": {
+			"service": "AppSync",
+			"providerPlugin": "awscloudformation",
+			"output": {
+				"authConfig": {
+					"additionalAuthenticationProviders": [],
+					"defaultAuthentication": {
+						"authenticationType": "API_KEY",
+						"apiKeyConfig": {
+							"description": "key",
+							"apiKeyExpirationDays": 7
+						}
+					}
+				}
+			}
 		}
 	}
 }

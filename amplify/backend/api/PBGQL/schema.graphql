@@ -1,0 +1,53 @@
+type User @model @key(fields:["username"])@key(name: "byArea", fields:["area"]){
+  username: String!
+  area: String!
+  voteSessions: [UserVoteSession] @connection(keyName: "byUser", fields: ["username"])
+}
+
+type VoteSession @model @key(fields:["vid"]) {
+  vid: ID!
+  budget: Int!
+  description: String!
+  area: String!
+  votingMethod: String!
+  users: [UserVoteSession] @connection(keyName: "bySession", fields: ["vid"])
+  projects: [Project] @connection(keyName:"bySession", fields:["vid"])
+  start: AWSDateTime
+  end: AWSDateTime
+  result: Result @connection(fields:["vid"])
+}
+
+type UserVoteSession @model 
+  @key(name: "byUser", fields: ["username", "vid"])
+  @key(name: "bySession", fields: ["vid", "username"])
+{
+  uvsid:ID!
+  username: String!
+  vid: ID!
+  start: AWSDateTime
+  end: AWSDateTime
+  user: User! @connection(fields:["username"])
+  votesession: VoteSession! @connection(fields:["vid"])
+}
+
+type Project @model  @key(fields:["pid"]) @key(name: "bySession", fields: ["vid"]) {
+  pid: ID!
+  cost: Int!
+  description: String!
+  vid:ID!
+  votes: Int
+}
+
+type Result @model  @key(fields:["rid"]) @key(name: "bySession", fields:["vid"]){
+  rid: ID!
+  vid: ID!
+  description:String!
+  winningProjects: [Project] 
+  date: AWSDateTime
+}
+
+input CreateVoteSessionInput {
+  description: String!
+  budget: Int!
+  area: String!
+}

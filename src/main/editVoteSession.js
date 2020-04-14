@@ -1,36 +1,19 @@
 import React, { useState } from "react"
 import { useMutation } from '@apollo/react-hooks';
-import {createVoteSession} from '../graphql/mutations'
 import gql from 'graphql-tag'
 import {navigate} from 'gatsby'
-
+import * as mutations from '../graphql/mutations'
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 
-
-const VoteCreatingPage = function(){
-
+const EditVoteSession = function({route}){
 
   const [description,setDesc] = useState("")
   const [budget,setBudget] = useState("")
   const [area,setArea] = useState("")
-  const [votingMethod,setVM] = useState("")
-  const createSessionDocFile = gql(createVoteSession)
-  const [createSession] = useMutation(createSessionDocFile)
-
-
-
-  const createVotingSession = async () => {
-    try{
-      const voteOptions = {
-        description: description,
-        budget: budget,
-        area: area
-      }
-      console.log(voteOptions)
-      const data = await createSession({variables: {input: voteOptions}})
-      console.log("data reached: " + data)
-    } catch(e) {alert("err: "+ e.code + e.message)}
+  const {item} = route.params
+  const [updateVS] = useMutation(gql(mutations.updateVoteSession))
+  const updateVotingSession = async () => {
   }
 
   return (
@@ -38,7 +21,7 @@ const VoteCreatingPage = function(){
       <SEO title="Creation form" />
       <form onSubmit = {async (event) => {
             event.preventDefault()
-            await createVotingSession()
+            await updateVotingSession()
             navigate('/app/main')
           }}>
         <label>
@@ -73,17 +56,6 @@ const VoteCreatingPage = function(){
             <option value = "Westminster">Westminster</option>
           </select>
         </label>
-        <label>
-          Voting system
-          <select onBlur = {(event) => {
-            const metod = event.target.value
-            setVM(method)
-          }} >
-            <option value = "yes/no">Yes-or-no voting system</option>
-            <option value = "preference">Preferemce voting system</option>
-            <option value = "ranking">Ranking voting system</option>
-          </select>
-        </label>
         
         <button type="submit">
             Submit
@@ -92,4 +64,4 @@ const VoteCreatingPage = function(){
     </Layout>
   )
 }
-export default VoteCreatingPage
+export default EditVoteSession
