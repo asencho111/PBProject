@@ -1,58 +1,34 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Dimensions, View, ScrollView, StyleSheet, Text, TouchableOpacity, TextInput, Alert} from 'react-native';
-
-import Header from '../components/Header';
-import firebase from 'firebase';
-
+import {Auth} from 'aws-amplify'
 
 const { width: WIDTH, height: HEIGHT } = Dimensions.get('window')
 
-export default class ChangePasswordScreen extends React.Component {
-    static navigationOptions = {
-        headerTitle: (
-            <Header/>
-        ),
-        headerStyle: {
-            backgroundColor: '#005eb8'
-        },
-        headerTintColor: 'white',
-    };
+  export default function ResetPasswordScreen({navigation}){
+    
+    const [username, setUsername] = useState('')
 
-    constructor() {
-        super();
-        this.state = {
-            email: '',
-        }
+    const resetPassword = async () => {
+      const a = await Auth.forgotPassword(username)
+      navigation.navigate('Reset Password confirm', {username})
     }
 
-    _onResetPassword = () => {
-        firebase.auth().sendPasswordResetEmail(this.state.email).then(() => {
-            Alert.alert('Success','A link to reset your password has been sent to your e-mail.')
-            this.props.navigation.navigate('LoginUI')
-          }).catch(function(error) {
-            Alert.alert(error.code,error.message);
-          });
-    }
-
-    render() {
-        return (
-            <ScrollView style={styles.container}>
-                <View style={styles.itemContainer}>
-                    <Text style={styles.label}>Enter your e-mail</Text>
-                    <TextInput 
-                        style={styles.passwordInput}
-                        onChangeText={(text) => this.state.email = text}
-                        clearButtonMode={'always'}
-                    />
-                </View>
-                
-                <TouchableOpacity style={styles.button} onPress = {this._onResetPassword} >
-                    <Text style={styles.buttonText}>Reset password</Text>
-                </TouchableOpacity>
-            </ScrollView>
-        );
-    }
-}
+    return (
+        <ScrollView style={styles.container}>
+            <View style={styles.itemContainer}>
+                <Text style={styles.label}>Enter your username</Text>
+                <TextInput 
+                    style={styles.passwordInput}
+                    onChangeText={(text) => setUsername(text)}
+                    clearButtonMode={'always'}
+                />
+            </View>
+            <TouchableOpacity style={styles.button} onPress = {async () => {resetPassword()}}>
+                <Text style={styles.buttonText}>Reset password</Text>
+            </TouchableOpacity>
+        </ScrollView>
+        )
+  }
 
 const styles = StyleSheet.create({
     container: {

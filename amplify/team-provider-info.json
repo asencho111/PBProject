@@ -10,13 +10,6 @@
             "StackName": "amplify-votingapp-yearthree-164337",
             "StackId": "arn:aws:cloudformation:eu-west-2:555247183382:stack/amplify-votingapp-yearthree-164337/5d3a47f0-6214-11ea-95fb-060e4e394d84",
             "AmplifyAppId": "d1musbozv5ssdk"
-        },
-        "categories": {
-            "auth": {
-                "PBAuth": {
-                    "hostedUIProviderCreds": "[]"
-                }
-            }
         }
     }
 }

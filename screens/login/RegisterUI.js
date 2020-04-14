@@ -1,4 +1,4 @@
-import React, {setState, useState} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,11 +7,9 @@ import {
   Dimensions,
   Alert,
   TouchableOpacity,
-  KeyboardAvoidingView,
   ScrollView
 } from 'react-native';
 import { Auth } from 'aws-amplify';
-import ConfirmSignInScreen from './ConfirmCodeScreen';
 
 const { width: WIDTH } = Dimensions.get('window')
 
@@ -42,12 +40,10 @@ export default function RegisterUI({navigation}) {
           attributes: attributes,
           validationData: []
         })
-        console.log(signUpResult)
         if (signUpResult.userConfirmed == false){
-          navigation.navigate('Confirm Code screen', {currentUsername: username, previousScreen : 'Register Screen'})
+          navigation.navigate('Confirm Code screen', {currentUsername: username, previousScreen : 'Register screen'})
         }
       } catch (err){
-        console.log(err.code + ' ' + err.message)
         Alert.alert (err.message)
       }
     }

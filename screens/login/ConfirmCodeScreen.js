@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,47 +10,47 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import {Auth} from 'aws-amplify'
-import CurrentUserContext from '../../navigation/UserContext'
 const { width: WIDTH } = Dimensions.get('window')
 
 export default function ConfirmCodeScreen({navigation, route}) {
 
   const [code, setCode] = useState('')
   const {previousScreen} = route.params
-  const {currentUser, setCurrentUser} = useContext(CurrentUserContext)
+  const {currentUsername} = route.params
 
   function confirmPressed() {
     if (previousScreen == 'Log-in Screen') {
-      confirmSignIn(code)
-    } else if (previousScreen == 'Register Screen'){
-      confirmSignUp(code)
+      confirmSignIn()
+    } else if (previousScreen == 'Register screen'){
+      confirmSignUp()
     }
   }
 
-  async function confirmSignIn(codeIn){
-    const {currentUser} = route.params
+  async function confirmSignIn(){
+    const {currentUser} = await Auth.currentUserInfo()
     try {
       const mfaType = currentUser.challengeName
-      await Auth.confirmSignIn(currentUser, codeIn, mfaType)
-      const user = await Auth.currentAuthenticatedUser()
-      setCurrentUser(user)
+      const user = await Auth.confirmSignIn(currentUser, code, mfaType)
       console.log(user)
     } catch(err) {
       Alert.alert(err.message)
     }
   }
 
-  async function confirmSignUp(codeIn){
-    const {currentUsername} = route.params
-    Auth.confirmSignUp(currentUsername, codeIn)
+  async function confirmSignUp(){
     try{
-      const status = await Auth.confirmSignUp(currentUsername, code)
-      console.log(status)
+      await Auth.confirmSignUp(currentUsername, code)
       navigation.goBack()
       navigation.goBack()
     } catch(err) {
       Alert.alert(err.message)
     }
+  }
+  async function resendCode(){
+    try {
+      await Auth.resendSignUp(currentUsername)
+      Alert.alert('', 'Code has been resent')
+    } catch (err) {Alert.alert(err.message)}   
   }
   return (
     <KeyboardAvoidingView style={styles.container} behavior='padding'>
@@ -63,10 +63,15 @@ export default function ConfirmCodeScreen({navigation, route}) {
         onChangeText={(text) => setCode(text)}
         returnKeyType='go'
       />
-      <Text>{"\n"}</Text>
+        <Text>{"\n"}</Text>
       <TouchableOpacity style={styles.loginBtn} onPress={() => confirmPressed()}>
-      <Text style={styles.textBtn}>Confirm</Text>
+        <Text style={styles.textBtn}>Confirm</Text>
       </TouchableOpacity>
+      {previousScreen == 'Register screen' 
+      ?(<TouchableOpacity style={styles.loginBtn} onPress={() => resendCode()}>
+          <Text style={styles.textBtn}>Resend Code </Text>
+        </TouchableOpacity>)
+      : null}
     </KeyboardAvoidingView>
 
   )

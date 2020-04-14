@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -17,29 +17,34 @@ export default function LoginUI({navigation}){
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-
+  useEffect(() => {
+    async function logOut(){
+      await Auth.signOut()
+    }
+    logOut()
+  },[])
   async function  signIn(){
     try {
         const user = await Auth.signIn(username, password);
         if (user.challengeName == 'SMS_MFA') {
           navigation.navigate('Confirm Code screen', {currentUser: user, previousScreen : 'Log-in Screen'})
         }
-        if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
-          const {requiredAttributes} = user.challengeParam; // the array of required attributes, e.g ['email', 'phone_number']
-          // You need to get the new password and required attributes from the UI inputs
-          // and then trigger the following function with a button click
-          // For example, the email and phone_number are required attributes
-          const {username, email, phone_number} = getInfoFromUserInput();
-          const loggedUser = await Auth.completeNewPassword(
-            user,              // the Cognito User Object
-            newPassword,       // the new password
-            // OPTIONAL, the required attributes
-            {
-                email,
-                phone_number,
-            }
-          );
-        }
+        // if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
+        //   const {requiredAttributes} = user.challengeParam; // the array of required attributes, e.g ['email', 'phone_number']
+        //   // You need to get the new password and required attributes from the UI inputs
+        //   // and then trigger the following function with a button click
+        //   // For example, the email and phone_number are required attributes
+        //   const {username, email, phone_number} = getInfoFromUserInput();
+        //   const loggedUser = await Auth.completeNewPassword(
+        //     user,              // the Cognito User Object
+        //     newPassword,       // the new password
+        //     // OPTIONAL, the required attributes
+        //     {
+        //         email,
+        //         phone_number,
+        //     }
+        //   );
+        // }
     } catch (err) {
         Alert.alert(err.message)
     }   
@@ -69,9 +74,9 @@ export default function LoginUI({navigation}){
           onChangeText={(text) => setPassword(text)}
           returnKeyType='go'
         />
-        {/* <View>
-          <Text style={styles.forgotPasswordText} onPress={() => this.props.navigation.navigate('ResetPasswordScreen')}>Forgot Password</Text>
-        </View> */}
+        <View>
+          <Text style={styles.forgotPasswordText} onPress={() => navigation.navigate('Reset Password screen')}> Forgot Password</Text>
+        </View>
         <Text>{"\n"}</Text>
         <TouchableOpacity style={styles.loginBtn} onPress={() => signIn()}>
           <Text style={styles.textBtn}>Login</Text>
